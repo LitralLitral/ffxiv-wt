@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="ffxiv-wt.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"; charset="utf-8">
+<script>
+
+var stickers = 0;
+
+function func(colrow) {
+	var col = colrow.charAt(0);
+	var row = colrow.charAt(1);
+	
+	if (document.getElementById(colrow).innerHTML != "O") {
+		stickers += 1;
+		document.getElementById(colrow).innerHTML = "O";
+	}
+	else {
+		if (document.getElementById(colrow).innerHTML == "O") {
+			stickers -= 1;
+		}
+		document.getElementById(colrow).innerHTML = "";
+	}
+	
+	document.getElementById("stickers_msg").innerHTML = "You have " + stickers + " stickers.";
+
+}
+
+function get_numlines(sti) {
+	//rows, cols
+	var numlines = 0;
+	for (var i=0; i<4; i++) {
+		var isline = 1;
+		for (var j=0; j<4; j++) {
+			if (sti[i][j] == 0) {
+				isline = 0;
+			}
+		}
+		numlines += isline;
+	}
+	for (var i=0; i<4; i++) {
+		var isline = 1;
+		for (var j=0; j<4; j++) {
+			if (sti[j][i] == 0) {
+				isline = 0;
+			}
+		}
+		numlines += isline;
+	}
+	//diags
+	var isline = 1;
+	for (var i=0; i<4; i++) {
+		if (sti[i][i] == 0) {
+			isline = 0;
+		}
+	}
+	numlines += isline;
+	var isline = 1;
+	for (var i=0; i<4; i++) {
+		if (sti[i][3-i] == 0) {
+			isline = 0;
+		}
+	}
+	numlines += isline;
+	return numlines;
+}
+
+function analyze() {
+  var sti = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  var nosti_pos = []; //no stickers in these positions
+  stickercount = 0;
+  for (var i=0; i<4; i++) {
+	for (var j=0; j<4; j++) {
+		if (document.getElementById(String(i)+String(j)).innerHTML == "O") {
+			sti[i][j] = 1;
+			stickercount += 1;
+		}
+		if (document.getElementById(String(i)+String(j)).innerHTML == "") {
+			//throw it into an array for easier processing
+			nosti_pos.push([i, j]);
+		}
+	}
+  }
+  if (stickercount != 7) {
+	msg = "We can only analyze WT boards with 7 stickers, kupo!";
+    document.getElementById("output").innerHTML = msg;
+	return 0;
+  }
+  results = [0, 0, 0, 0]
+  for (var i=0; i<nosti_pos.length; i++) {
+	for (var j=i+1; j<nosti_pos.length; j++) {
+		sti[nosti_pos[i][0]][nosti_pos[i][1]] = 1;
+		sti[nosti_pos[j][0]][nosti_pos[j][1]] = 1;
+		numlines = get_numlines(sti);
+		console.log(sti + i + " " + j +  " " + numlines);
+		results[numlines] += 1;
+		sti[nosti_pos[i][0]][nosti_pos[i][1]] = 0;
+		sti[nosti_pos[j][0]][nosti_pos[j][1]] = 0;
+	}
+  }
+  msg = "<p>";
+  for (var i=0; i<4; i++) {
+	msg += "Chance of getting " + i + " lines = " + Math.round(results[i]/0.036)/10 + "%<br> <br>"
+  }
+  msg += "</p>";
+  document.getElementById("output").innerHTML = msg;
+}
+
+</script>
+</head>
+
+<body>
+## FFXIV Wondrous Tails Simulator
+<table class="style1">
+<tr>
+<td class="tdboard">
+<table class="style2">
+<tr>
+<td id="00" onclick="func(this.id)"></td>
+<td id="01" onclick="func(this.id)"></td>
+<td id="02" onclick="func(this.id)"></td>
+<td id="03" onclick="func(this.id)"></td>
+</tr>
+<tr>
+<td id="10" onclick="func(this.id)"></td>
+<td id="11" onclick="func(this.id)"></td>
+<td id="12" onclick="func(this.id)"></td>
+<td id="13" onclick="func(this.id)"></td>
+</tr>
+<tr>
+<td id="20" onclick="func(this.id)"></td>
+<td id="21" onclick="func(this.id)"></td>
+<td id="22" onclick="func(this.id)"></td>
+<td id="23" onclick="func(this.id)"></td>
+</tr>
+<tr>
+<td id="30" onclick="func(this.id)"></td>
+<td id="31" onclick="func(this.id)"></td>
+<td id="32" onclick="func(this.id)"></td>
+<td id="33" onclick="func(this.id)"></td>
+</tr>
+</table>
+</td>
+<td class="tdoutput">
+<p id = "output">Click on the left to input 7 stickers. <br> Your analysis will appear here!</p>
+</td>
+</tr>
+</table>
+
+<p style="text-align:center"> <button onclick="analyze()"> Analyze my board! </button> </p>
+<p style="text-align:center" id = "stickers_msg"> You have 0 stickers. </p>
+
+<table style="margin-left:auto; margin-right:auto;">
+<tr> <td style="border: 1px solid black; text-align:center;">Reference for a random 7-sticker reshuffle:</td></tr>
+<tr> <td>
+<p style="text-align:left">
+Chance of getting 0 lines = 41.5%
+<br> <br> Chance of getting 1 lines = 47.9%
+<br> <br> Chance of getting 2 lines = 10.3%
+<br> <br> Chance of getting 3 lines = 0.2%
+</p>
+</td>
+</tr><tr> <td>
+<p style="text-align:left">
+Chance of getting a board with 0% 3-line chance = 92.8%
+<br> <br> Chance of getting a board with 2.8% 3-line chance = 7.0%
+<br> <br> Chance of getting a board with 5.5% 3-line chance = 0.1%
+<br> <br> Chance of getting a board with 8.3% 3-line chance = 0.1%
+</p>
+</td>
+</tr>
+</table>
+
+</body>
+</html>

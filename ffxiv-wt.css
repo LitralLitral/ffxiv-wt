@@ -1,0 +1,37 @@
+table.style1 {
+  border: 1px solid black;
+  margin-left: auto;
+  margin-right: auto;
+}
+table.style2 {
+  border: 1px solid black;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+table.style1 td {
+}
+
+td.tdboard {
+  text-align: center;
+  width: 200px;
+  height: 200px;
+	
+}
+
+td.tdoutput {
+  padding-left: 30px;
+  width: 300px;
+  height: 200px;
+  text-align: left;
+}
+
+table.style2 td {
+  border: 1px solid black;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
